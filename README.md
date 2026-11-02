@@ -1,12 +1,16 @@
-# kies
+# @wordup-md/kies
 
 Sniff a project from its files: its framework (or static site generator, or plain files), its content layer, its git-based CMS, the folders of its content and assets, and the same for each package of its workspaces.
 
 Config files are **parsed, never run** (with [magicast](https://github.com/unjs/magicast), loaded on demand), so `kies` works in browsers as well as Node.js, over any file system: a folder on disk, a folder opened by the browser, the tree of a git forge.
 
+```sh
+pnpm add @wordup-md/kies
+```
+
 ```ts
-import { sniff } from "kies";
-import { nodeFs } from "kies/node";
+import { sniff } from "@wordup-md/kies";
+import { nodeFs } from "@wordup-md/kies/node";
 
 const { projects } = await sniff(nodeFs("."));
 const [site] = projects;
@@ -53,8 +57,8 @@ interface KiesFs {
 }
 ```
 
-- `kies/node`: `nodeFs(root)`, a folder on disk.
-- `kies/memory`: `memoryFs(files)`, an object of paths and contents, or `memoryFs(paths, read)`: a list of paths (the keys of a storage, the tree of a repository) and a function reading a file on demand.
+- `@wordup-md/kies/node`: `nodeFs(root)`, a folder on disk.
+- `@wordup-md/kies/memory`: `memoryFs(files)`, an object of paths and contents, or `memoryFs(paths, read)`: a list of paths (the keys of a storage, the tree of a repository) and a function reading a file on demand.
 
 Each file and folder is read once per `sniff`.
 

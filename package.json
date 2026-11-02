@@ -1,5 +1,5 @@
 {
-  "name": "kies",
+  "name": "@wordup-md/kies",
   "version": "0.0.0",
   "description": "Sniff a project from its files: framework, static site generator, git-based CMS, content and assets folders, workspaces. Runs in browsers and Node.js over any file system.",
   "keywords": [

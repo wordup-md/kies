@@ -18,8 +18,8 @@ export { readConfig } from "./config-object.ts";
  * Hugo's `contentDir`…), a `content/` folder, else the root.
  *
  * @example
- * import { sniff } from "kies";
- * import { nodeFs } from "kies/node";
+ * import { sniff } from "@wordup-md/kies";
+ * import { nodeFs } from "@wordup-md/kies/node";
  * const { projects } = await sniff(nodeFs("."));
  * projects[0].framework?.name; // "Nuxt"
  * projects[0].contentDir; // "content"
