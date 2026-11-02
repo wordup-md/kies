@@ -2,6 +2,7 @@ import { cmsContentDir, detectCms } from "./cms.ts";
 import { cached, commonDir, join, ProjectFiles } from "./fs.ts";
 import { detectFramework, hugoConfig, parseConfigFile, type PackageJson } from "./frameworks.ts";
 import { contentLayer, nuxtLayout } from "./nuxt.ts";
+import { detectUi, entryStyles } from "./ui.ts";
 import type { AssetsDir, KiesFs, Project, SniffOptions, SniffResult } from "./types.ts";
 import { expandWorkspaces, workspaceGlobs } from "./workspaces.ts";
 
@@ -48,10 +49,11 @@ export async function sniffProject(fs: KiesFs, root = ""): Promise<Project> {
   const files = new ProjectFiles(fs, root);
   const signals: string[] = [];
   const pkg = await files.json<PackageJson>("package.json");
-  const [framework, cms, layer] = await Promise.all([
+  const [framework, cms, layer, ui] = await Promise.all([
     detectFramework(files, pkg, signals),
     detectCms(files, pkg, signals),
     contentLayer(files, pkg, signals),
+    detectUi(files, pkg, signals),
   ]);
   const project: Project = {
     root,
@@ -61,6 +63,8 @@ export async function sniffProject(fs: KiesFs, root = ""): Promise<Project> {
     cms: cms.map((item) => item.cms),
     contentDir: "",
     assetsDirs: [],
+    ui: ui.ui,
+    styles: [],
     signals,
   };
 
@@ -70,9 +74,11 @@ export async function sniffProject(fs: KiesFs, root = ""): Promise<Project> {
     item.media ? [{ path: item.media, kind: "media" as const }] : [],
   );
   const conventions: AssetsDir[] = [];
+  let nuxtSrcDir: string | undefined;
   switch (framework?.id) {
     case "nuxt": {
       const nuxt = await nuxtLayout(files, framework.version, signals);
+      nuxtSrcDir = nuxt.srcDir;
       conventions.push(
         { path: nuxt.publicDir, kind: "public" },
         { path: nuxt.assetsDir, kind: "build" },
@@ -166,6 +172,12 @@ export async function sniffProject(fs: KiesFs, root = ""): Promise<Project> {
     if (candidate.kind !== "media" && !(await files.isDir(candidate.path))) continue;
     project.assetsDirs.push({ ...candidate, path: files.path(candidate.path) });
   }
+  project.styles = await entryStyles(
+    files,
+    ui.styles,
+    nuxtSrcDir === undefined ? undefined : { srcDir: nuxtSrcDir },
+  );
+
   // The best: one served as is (public or media), else one the bundler processes.
   project.assetsDir = (
     project.assetsDirs.find((dir) => dir.kind !== "build") ?? project.assetsDirs[0]

@@ -60,6 +60,15 @@ export interface GitCms {
   read: boolean;
 }
 
+/** A UI system styling the project: a component library with a theme, or a CSS engine. */
+export interface UiLibrary {
+  id: "nuxt-ui" | "shadcn" | "unocss" | "tailwind";
+  name: string;
+  /** The version range of its package, e.g. `^4.0.0`. */
+  version?: string;
+  /** Its configuration file, when it has one: `components.json`, `uno.config.ts`. */
+  config?: string;
+}
 /** A folder that may hold the assets of the site. */
 export interface AssetsDir {
   path: string;
@@ -88,6 +97,14 @@ export interface Project {
   assetsDir?: string;
   /** Every candidate, best first. */
   assetsDirs: AssetsDir[];
+  /** Its UI systems, e.g. Nuxt UI and Tailwind CSS. */
+  ui: UiLibrary[];
+  /**
+   * Its entry stylesheets, relative to the root of what was sniffed, best first: those its
+   * config declares (`css` of `nuxt.config`, `tailwind.css` of `components.json`), then the
+   * usual ones that exist (`app/assets/css/main.css`, `src/app.css`…).
+   */
+  styles: string[];
   /** Static values of its `app.config` (Nuxt), when it has one. */
   appConfig?: StaticValue;
   /** Its `nuxt.schema` (Nuxt Studio): the fields of the app config. */

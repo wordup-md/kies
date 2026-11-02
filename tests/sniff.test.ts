@@ -386,3 +386,57 @@ describe("workspaces", () => {
     expect(projects).toHaveLength(1);
   });
 });
+
+describe("ui", () => {
+  it("detects Nuxt UI on Tailwind CSS and the stylesheet of nuxt.config", async () => {
+    const { ui, styles, signals } = await project({
+      "package.json": pkg({ nuxt: "^4.1.0", "@nuxt/ui": "^4.12.0", tailwindcss: "^4.1.0" }),
+      "nuxt.config.ts": `export default defineNuxtConfig({ modules: ["@nuxt/ui"], css: ["~/assets/css/theme.css", "@nuxt/ui"] })`,
+      "app/assets/css/theme.css": `@import "tailwindcss"; @import "@nuxt/ui";`,
+      "app/app.vue": "",
+    });
+    expect(ui).toEqual([
+      { id: "nuxt-ui", name: "Nuxt UI", version: "^4.12.0" },
+      { id: "tailwind", name: "Tailwind CSS", version: "^4.1.0" },
+    ]);
+    expect(styles).toEqual(["app/assets/css/theme.css"]);
+    expect(signals).toContain("package.json: @nuxt/ui ^4.12.0");
+  });
+
+  it("detects shadcn from components.json and its stylesheet", async () => {
+    const { ui, styles } = await project({
+      "package.json": pkg({ vue: "^3.5.0", "reka-ui": "^2.0.0", tailwindcss: "^4.1.0" }),
+      "components.json": JSON.stringify({
+        $schema: "https://shadcn-vue.com/schema.json",
+        tailwind: { css: "src/assets/index.css" },
+      }),
+      "src/assets/index.css": ":root { --background: oklch(1 0 0); }",
+      "src/style.css": "",
+    });
+    expect(ui[0]).toEqual({ id: "shadcn", name: "shadcn-vue", config: "components.json" });
+    expect(styles).toEqual(["src/assets/index.css", "src/style.css"]);
+  });
+
+  it("detects UnoCSS from its config alone", async () => {
+    const { ui } = await project({ "uno.config.ts": "export default defineConfig({})" });
+    expect(ui).toEqual([{ id: "unocss", name: "UnoCSS", config: "uno.config.ts" }]);
+  });
+
+  it("prefixes the paths of a workspace package", async () => {
+    const { projects } = await sniff(
+      memoryFs({
+        "package.json": JSON.stringify({ workspaces: ["apps/*"] }),
+        "apps/site/package.json": pkg({ nuxt: "^4.1.0", "@nuxt/ui": "^4.0.0" }),
+        "apps/site/app/assets/css/main.css": "",
+        "apps/site/app/app.vue": "",
+      }),
+    );
+    expect(projects[1]?.styles).toEqual(["apps/site/app/assets/css/main.css"]);
+  });
+
+  it("finds no UI system in plain files", async () => {
+    const { ui, styles } = await project({ "index.html": "", "notes.md": "" });
+    expect(ui).toEqual([]);
+    expect(styles).toEqual([]);
+  });
+});

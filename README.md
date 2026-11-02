@@ -21,19 +21,22 @@ site.content; // { id: "nuxt-content", name: "Nuxt Content", version: "^3.6.0" }
 site.contentDir; // "content"
 site.assetsDir; // "public"
 site.assetsDirs; // [{ path: "public", kind: "public" }, { path: "app/assets", kind: "build" }]
+site.ui; // [{ id: "nuxt-ui", name: "Nuxt UI", version: "^4.12.0" }, { id: "tailwind", name: "Tailwind CSS", version: "^4.1.0" }]
+site.styles; // ["app/assets/css/main.css"]
 site.signals; // ["package.json: nuxt ^4.1.0", "content.config.ts: 2 collection(s) (blog, docs) in content", …]
 ```
 
 ## What it detects
 
-|                        |                                                                                                                                                 |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| Frameworks             | Nuxt, Next.js, SvelteKit, Astro, Remix / React Router, Angular, Solid, Svelte, Vue, React, Vite; `vanilla` for plain files with an `index.html` |
-| Static site generators | Hugo, Jekyll, Eleventy, VitePress, Docusaurus                                                                                                   |
-| Content layers         | Nuxt Content (collections of `content.config`), Comark Content, Astro content collections                                                       |
-| Git-based CMS          | Decap CMS, Sveltia CMS, Front Matter CMS (configs read); TinaCMS, Keystatic, Nuxt Studio (detected)                                             |
-| Nuxt                   | `srcDir`, `dir.public`, `dir.assets` of `nuxt.config`; static values of `app.config` and `nuxt.schema`                                          |
-| Workspaces             | `pnpm-workspace.yaml`, `workspaces` of `package.json` (`*`, `**`, `!` globs)                                                                    |
+|                        |                                                                                                                                                                                         |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Frameworks             | Nuxt, Next.js, SvelteKit, Astro, Remix / React Router, Angular, Solid, Svelte, Vue, React, Vite; `vanilla` for plain files with an `index.html`                                         |
+| Static site generators | Hugo, Jekyll, Eleventy, VitePress, Docusaurus                                                                                                                                           |
+| Content layers         | Nuxt Content (collections of `content.config`), Comark Content, Astro content collections                                                                                               |
+| Git-based CMS          | Decap CMS, Sveltia CMS, Front Matter CMS (configs read); TinaCMS, Keystatic, Nuxt Studio (detected)                                                                                     |
+| UI systems             | Nuxt UI, shadcn (ui, vue, svelte, solid: `components.json`), UnoCSS, Tailwind CSS; the entry stylesheets (`css` of `nuxt.config`, `tailwind.css` of `components.json`, the usual paths) |
+| Nuxt                   | `srcDir`, `dir.public`, `dir.assets` of `nuxt.config`; static values of `app.config` and `nuxt.schema`                                                                                  |
+| Workspaces             | `pnpm-workspace.yaml`, `workspaces` of `package.json` (`*`, `**`, `!` globs)                                                                                                            |
 
 ## Folders
 
