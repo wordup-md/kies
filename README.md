@@ -2,7 +2,7 @@
 
 Sniff a project from its files: its framework (or static site generator, or plain files), its content layer, its git-based CMS, the folders of its content and assets, and the same for each package of its workspaces.
 
-**Isomorphic**: the same code runs in browsers, Node.js, Deno, Bun and workers. Only the `@wordup-md/kies/node` adapter imports Node.js modules; the core reads through an interface you implement for any file system (a folder on disk, a folder opened with the File System Access API, the tree of a git forge, an unstorage storage).
+**Isomorphic**: the same code runs in browsers and Node.js, with no API of a given runtime. Only the `@wordup-md/kies/node` adapter imports Node.js modules; the core reads through an interface you implement for any file system (a folder on disk, a folder opened with the File System Access API, the tree of a git forge, an unstorage storage).
 
 Config files are **parsed, never run** (with [magicast](https://github.com/unjs/magicast), loaded on demand): no `eval`, no `require`, nothing of the project executes.
 
